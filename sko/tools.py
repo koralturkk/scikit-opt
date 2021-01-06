@@ -1,5 +1,5 @@
 import numpy as np
-
+from functools import lru_cache 
 
 def func_transformer(func):
     '''
@@ -28,6 +28,13 @@ def func_transformer(func):
 
     is_vector = getattr(func, 'is_vector', False)
     is_parallel = getattr(func, 'is_parallel', False)
+    is_cached = getattr(func, 'is_cached', False)
+
+    if is_cached:
+        @lru_cache(maxsize = None) 
+        def func_cached(X):
+            return func
+        func = func_cached
 
     if is_vector:
         return func
